@@ -68,7 +68,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecretKey jwtSecretKey(@Value("${JWT_SECRET}") String secret) {
+    SecretKey jwtSecretKey(@Value("${grooks.jwt.secret}") String secret) {
         byte[] keyBytes = Base64.getDecoder().decode(secret);
         return new SecretKeySpec(keyBytes, "HmacSHA256");
     }

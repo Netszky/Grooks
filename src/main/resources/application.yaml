@@ -18,4 +18,5 @@ spring:
     import: optional:file:.env[.properties]
 grooks:
   jwt:
+    secret: ${JWT_SECRET}
     duration: ${JWT_DURATION:1h}
