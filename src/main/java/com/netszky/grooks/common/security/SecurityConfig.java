@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/register").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .bearerTokenResolver(bearerTokenResolver)

@@ -16,3 +16,6 @@ spring:
       ddl-auto: validate
   config:
     import: optional:file:.env[.properties]
+grooks:
+  jwt:
+    duration: ${JWT_DURATION:1h}

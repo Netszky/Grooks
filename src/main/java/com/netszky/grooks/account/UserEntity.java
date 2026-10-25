@@ -1,5 +1,6 @@
 package com.netszky.grooks.account;
 
+import com.netszky.grooks.common.security.Role;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
 
