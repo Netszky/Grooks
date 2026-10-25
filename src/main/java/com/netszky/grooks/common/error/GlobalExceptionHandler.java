@@ -18,6 +18,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiError> handleBusinessException(BusinessException e){
+        ApiError error = new ApiError(
+                e.getCode(),
+                e.getMessage()
+        );
+        log.warn("Erreur métier: {} avec le message : {}", e.getClass().getSimpleName(), e.getMessage());
+        return ResponseEntity.status(e.getStatus()).body(error);
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError> handleAuthenticationException(AuthenticationException e) {
         ApiError error = new ApiError(
