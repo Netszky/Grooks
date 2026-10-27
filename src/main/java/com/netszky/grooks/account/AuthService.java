@@ -7,7 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.UUID;
 
 
@@ -18,7 +17,9 @@ public class AuthService {
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
 
-
+    private static UserResponse toUserResponse(UserEntity user) {
+        return new UserResponse(user.getId(), user.getEmail(), user.getRole().name(), user.getFirstName(), user.getLastName());
+    }
     public AuthService(UserRepository userRepository,  AuthenticationManager authenticationManager,  TokenService tokenService,  PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
@@ -49,5 +50,11 @@ public class AuthService {
         UserEntity user = UserEntity.newMember(request.email(), request.firstName(), request.lastName(), encodedPassword);
         userRepository.save(user);
 
+    }
+
+
+    public UserResponse getCurrentUser(UUID id) {
+        var user = userRepository.findById(id).orElseThrow(() -> new CurrentUserNotFoundException());
+        return toUserResponse(user);
     }
 }
