@@ -29,6 +29,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.util.WebUtils;
 import tools.jackson.databind.ObjectMapper;
 
@@ -41,7 +42,7 @@ import java.util.Base64;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint, BearerTokenResolver bearerTokenResolver) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint, BearerTokenResolver bearerTokenResolver, AccessDeniedHandler accessDeniedHandler) throws Exception {
         http
                 .csrf(csrf -> csrf
                         .spa()
@@ -57,7 +58,9 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .bearerTokenResolver(bearerTokenResolver)
                         .jwt(Customizer.withDefaults())
-                        .authenticationEntryPoint(authenticationEntryPoint));
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                );
         return http.build();
 
     }
@@ -97,10 +100,17 @@ public class SecurityConfig {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(new ApiError(
-                    "UNAUTHENTICATED",
-                    "Authentification requise"
-            )));
+            response.getWriter().write(objectMapper.writeValueAsString(ApiError.unauthorized()));
+        };
+    }
+
+    @Bean
+    AccessDeniedHandler accessDeniedHandler(ObjectMapper objectMapper) {
+        return (request, response, accessDeniedException) -> {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(objectMapper.writeValueAsString(ApiError.forbidden()));
         };
     }
 
