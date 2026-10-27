@@ -2,8 +2,8 @@ package com.netszky.grooks.account;
 
 import com.netszky.grooks.common.security.AccessToken;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +25,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@Valid @RequestBody LoginRequest request) {
 
-        var token = authService.login(request.email(), request.password());
+        var token = authService.login(request);
 
         var cookie = ResponseCookie.from(
                 AccessToken.ACCESS_TOKEN_COOKIE,
@@ -38,5 +38,11 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
