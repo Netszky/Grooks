@@ -46,3 +46,5 @@ application-local.yaml
 
 ### Données locales de Docker ###
 postgres-data/
+
+cookies.txt
