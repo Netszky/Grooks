@@ -41,10 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException e) {
-        ApiError error = new ApiError(
-                "FORBIDDEN",
-                "Vous n'êtes pas autorisé à accéder à cette ressource."
-        );
+        ApiError error = ApiError.forbidden();
         log.warn("Accès non autorisé : {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
