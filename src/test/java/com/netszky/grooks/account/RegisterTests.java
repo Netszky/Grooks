@@ -54,7 +54,14 @@ public class RegisterTests {
         String body = createJsonBody("malformedjson@test.com");
         mockMvc.perform(post("/auth/register")
                         .contentType("application/json")
-                        .content(body))
+                        .content("""
+                                {
+                                  "email": "malformedjson@test.com",
+                                  "password": "passwordTest",
+                                  "firstName": "John",
+                                  "lastName": "Doe",
+                                }
+                                """))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpectAll(
                         status().isBadRequest(),
@@ -72,10 +79,15 @@ public class RegisterTests {
     }
     @Test
     void registerWithMissingLastNameShouldReturnValidationError() throws Exception {
-        String body = createJsonBody("missingname@test.com");
         mockMvc.perform(post("/auth/register")
                         .contentType("application/json")
-                        .content(body))
+                        .content("""
+                                {
+                                  "email": "missingname@test.com",
+                                  "password": "passwordTest",
+                                  "firstName": "John"
+                                }
+                                """))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpectAll(
                         status().isBadRequest(),
@@ -126,7 +138,7 @@ public class RegisterTests {
     void registerWithExistingEmailCaseInsensitiveShouldReturnConflict() throws Exception {
 
         String body = createJsonBody("conflictcase@test.com");
-        String body2 = createJsonBody("ConflictCas@test.com");
+        String body2 = createJsonBody("ConflictCase@test.com");
         mockMvc.perform(post("/auth/register")
                         .contentType("application/json")
                         .content(body))
