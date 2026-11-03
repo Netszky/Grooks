@@ -47,7 +47,7 @@ public class LoginTests {
     @Test
     void loginShouldReturnNoContentAndCookie() throws Exception {
 
-        String body = createJsonBody("created@test.com");
+        String body = createJsonBody("login@test.com");
 
         mockMvc.perform(post("/auth/register")
                         .contentType("application/json")
@@ -61,7 +61,7 @@ public class LoginTests {
                         .contentType("application/json")
                         .content("""
                                 {
-                                "email": "created@test.com",
+                                "email": "login@test.com",
                                 "password": "passwordTest"
                                 }
                                 """))
